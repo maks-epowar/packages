@@ -7,7 +7,7 @@ import StoreKit
 
 @available(iOS 15.0, macOS 12.0, *)
 extension Product {
-  var convertToPigeon: SK2ProductMessage {
+  func convertToPigeon() async -> SK2ProductMessage {
 
     return SK2ProductMessage(
       id: id,
@@ -16,7 +16,7 @@ extension Product {
       price: NSDecimalNumber(decimal: price).doubleValue,
       displayPrice: displayPrice,
       type: type.convertToPigeon,
-      subscription: subscription?.convertToPigeon,
+      subscription: await subscription?.convertToPigeon(),
       priceLocale: priceFormatStyle.locale.convertToPigeon
     )
   }
@@ -51,7 +51,7 @@ extension Product.ProductType {
 
 @available(iOS 15.0, macOS 12.0, *)
 extension Product.SubscriptionInfo {
-  var convertToPigeon: SK2SubscriptionInfoMessage {
+  func convertToPigeon() async -> SK2SubscriptionInfoMessage {
     var allOffers: [SK2SubscriptionOfferMessage] = []
 
     if #available(iOS 18.0, macOS 15.0, *) {
@@ -67,7 +67,8 @@ extension Product.SubscriptionInfo {
     return SK2SubscriptionInfoMessage(
       promotionalOffers: allOffers,
       subscriptionGroupID: subscriptionGroupID,
-      subscriptionPeriod: subscriptionPeriod.convertToPigeon
+      subscriptionPeriod: subscriptionPeriod.convertToPigeon,
+      isEligibleForIntroOffer: await isEligibleForIntroOffer
     )
   }
 }
@@ -77,6 +78,7 @@ extension SK2SubscriptionInfoMessage: Equatable {
     return lhs.promotionalOffers == rhs.promotionalOffers
       && lhs.subscriptionGroupID == rhs.subscriptionGroupID
       && lhs.subscriptionPeriod == rhs.subscriptionPeriod
+      && lhs.isEligibleForIntroOffer == rhs.isEligibleForIntroOffer
   }
 }
 

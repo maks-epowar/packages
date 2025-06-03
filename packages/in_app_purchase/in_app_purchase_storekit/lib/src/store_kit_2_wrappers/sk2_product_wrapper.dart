@@ -138,6 +138,7 @@ class SK2SubscriptionInfo {
     required this.subscriptionGroupID,
     required this.promotionalOffers,
     required this.subscriptionPeriod,
+    required this.isEligibleForIntroOffer,
   });
 
   /// An array of all the promotional offers configured for this subscription.
@@ -148,12 +149,16 @@ class SK2SubscriptionInfo {
 
   /// The duration that this subscription lasts before auto-renewing.
   final SK2SubscriptionPeriod subscriptionPeriod;
+
+  /// Is the user eligible for introductory offers.
+  final bool isEligibleForIntroOffer;
 }
 
 extension on SK2SubscriptionInfoMessage {
   SK2SubscriptionInfo convertFromPigeon() {
     return SK2SubscriptionInfo(
       subscriptionGroupID: subscriptionGroupID,
+      isEligibleForIntroOffer: isEligibleForIntroOffer,
       promotionalOffers: promotionalOffers
           .map((SK2SubscriptionOfferMessage offer) => offer.convertFromPigeon())
           .toList(),
