@@ -22,8 +22,9 @@ extension InAppPurchasePlugin: InAppPurchase2API {
     Task {
       do {
         let products = try await Product.products(for: identifiers)
-        let productMessages = products.map {
-          $0.convertToPigeon
+        var productMessages: [SK2ProductMessage] = []
+        for product in products {
+            productMessages.append(await product.convertToPigeon())
         }
         completion(.success(productMessages))
       } catch {

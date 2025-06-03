@@ -332,6 +332,7 @@ void main() {
         subscription: const SK2SubscriptionInfo(
           subscriptionGroupID: 'group1',
           promotionalOffers: <SK2SubscriptionOffer>[],
+          isEligibleForIntroOffer: false,
           subscriptionPeriod: SK2SubscriptionPeriod(
             value: 1,
             unit: SK2SubscriptionPeriodUnit.month,
@@ -361,6 +362,7 @@ void main() {
         subscription: const SK2SubscriptionInfo(
           subscriptionGroupID: 'group1',
           promotionalOffers: <SK2SubscriptionOffer>[],
+          isEligibleForIntroOffer: false,
           subscriptionPeriod: SK2SubscriptionPeriod(
             value: 1,
             unit: SK2SubscriptionPeriodUnit.month,
