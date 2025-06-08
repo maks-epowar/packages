@@ -45,6 +45,7 @@ extension InAppPurchasePlugin: InAppPurchase2API {
   ) {
     Task { @MainActor in
       do {
+        await Transaction.clearUnfinishedTransactionsPrePurchase()
         guard let product = try await Product.products(for: [id]).first else {
           let error = PigeonError(
             code: "storekit2_failed_to_fetch_product",
@@ -342,4 +343,18 @@ extension InAppPurchasePlugin: InAppPurchase2API {
     }
     return nil
   }
+}
+
+@available(iOS 15.0, macOS 12.0, *)
+extension Transaction {
+    static func clearUnfinishedTransactionsPrePurchase() async {
+        for await unfinished in Transaction.unfinished {
+            let unsafe = unfinished.unsafePayloadValue
+            guard (unsafe.expirationDate ?? .now) < .now else { continue }
+            switch unfinished {
+            case let .unverified(t, _): await t.finish()
+            case let .verified(t): await t.finish()
+            }
+        }
+    }
 }
